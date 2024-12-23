@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=codersolutions
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your-secure-password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=False
+      - DJANGO_SECRET_KEY=your-production-secret-key
+      - DB_NAME=codersolutions
+      - DB_USER=postgres
+      - DB_PASSWORD=your-secure-password
+      - DB_HOST=db
+      - DB_PORT=5432
+
+volumes:
+  postgres_data:
